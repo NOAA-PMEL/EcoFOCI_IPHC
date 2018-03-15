@@ -1,0 +1,382 @@
+c  plot4up_epic_ChlTempOxOxsat.ppc
+c    Plot Plus script
+c    PSullivan revision of DKachel old code.  
+c    February 21, 2017
+
+c  FUNCTION:
+c    4-Plot - CTD data, EPIC-NetCDF files, 4 x-axes.
+c    Pressure vs Chlorophyll, Temperature, Oxygen (umol/kg), Oxygen (% sat)
+c  TO RUN:
+c    pplus plot4up_epic_ChlTempOxOxsat.ppc {fname.ppc | pointer.ptr}
+c  INPUT: either 1 EPIC-standard NetCDF file, or a pointer file with flat list of NetCDF files.  
+c  NOTES: edited for IPHC profile data sets.  Unknown if works with newer-format NetCDF.
+
+c    p1  - pointer file name
+c    p2  - plot file type[3]
+
+@'eps$ppc'/color x
+set my_colors "'red','green','aqua','magenta',"
+set my_varlist "eps28,eps933,eps65,eps62,"
+
+if p1 .eq. "" then
+  e print "Need filename or pointer file as input"
+  return
+else
+  set fname $element(1,".",p1)
+  set ftype $element(2,".",p1)
+  if ftype .eq. "." then
+    set ftype "point"
+  endif
+  set pointer_file "'fname'.'ftype'"
+  e openr "'pointer_file'"
+endif
+
+c  Create output plot file (ptype 4)
+  set ptype 4
+pltype 'ptype'
+box,off
+window,on
+size,8.5,11.0
+
+set size0 0.10
+set size1 0.12
+set size2 0.16
+labset 'size1','size1','size1','size1'
+axlsze 'size1','size1'
+tics 0.0625,0.125,0.0625,0.125
+
+set xax 5.0
+set yax 6.0
+set yspace 1.0
+set xspace 0.75
+set yheader 1.1
+axlen 'xax','yax'
+
+set xmargin 0.6
+set ymargin 0.1
+
+axlint,1,1
+
+set nct 0
+while ppl$eof .ne. "YES" then
+  inc nct
+  e nextr
+  if ppl$eof .ne. "YES" then
+    set xorg 1.2
+    set yorg 1.6
+    axset 0,0,1,1
+    origin,'xorg','yorg'
+
+    set nct $integer(nct)
+    e print "creating plot 'nct'"
+
+c  PLOT P vs first var,  with x- axis at top.  Supress bottom x-axis.
+c   Red, eps28, temperature
+
+    set pname $element(1,".",eps$filename)
+    set pname $extract(1,7,pname)
+    set ptype $element(2,".",eps$filename)
+    set ptype $element(1,";",ptype)
+    set pname "'pname'_'ptype'.plt"
+    pltnme 'pname'
+    
+    set nvar 1
+    set this_color $element('nvar',",",my_colors)
+    set this_var $element('nvar',",",my_varlist)
+    set lvar $locate("'this_var'",eps$varlist)
+    set aaa 'lvar'
+    if lvar .ne. 0 then
+      set have_var "YES"
+    else
+      set have_var "NO"
+    endif
+    set aaa "'have_var'"
+    e vv = 'this_var'[z=*]
+    e vv
+    e vv.name
+    set short_name "'eps$attr'"
+
+    set tlabx1 'ppl$xlast(1)'
+    set tlaby1 'ppl$ylast(1)'
+    %opnplt:nooverlay
+    %range 0,'ppl$ymax(1)',5
+    yaxis 'ppl$range_high','ppl$range_low','ppl$range_inc'
+    yfor,(i7)
+    title " "
+    axlabp 1,-1
+    set this_xmin 'ppl$xmin(1)'
+    set this_xmax 'ppl$xmax(1)'
+    if this_xmin .ge. this_xmax then
+      set this_xmin 'this_xmin' - 1.0
+      set this_xmax 'this_xmax' + 1.0
+    endif
+    %range 'this_xmin','this_xmax',4
+    
+    set col 1000. + 'this_color'
+    set col $integer(col)
+    set ccol $extract(2,3,col)
+    set ccol "C'ccol'"
+    pen 0,1
+    pen 1,'this_color'
+    pen 'ppl$line_count','this_color'
+    line 'ppl$line_count',3,0
+
+    set this_xlabel "'eps$xlabel'"
+    xlab " "
+    xaxis,'ppl$range_low','ppl$range_high','ppl$range_inc'
+    plot
+    %label:user 'ppl$xlast1','ppl$ylast1',+1,0.,'size1',"@'ccol''short_name'"
+
+    pen 0,'this_color'
+    set ypos 'ppl$ylen'
+    xlab "'this_xlabel'"
+    %xaxis:nouser,'ppl$range_low','ppl$range_high','ppl$range_inc','ypos',,,,+1,'size1'
+
+c  PLOT P vs second variable,
+c   Green, eps933, Chlorophyll 
+    nlines
+
+    set nvar 2
+    set this_color $element('nvar',",",my_colors)
+    set this_var $element('nvar',",",my_varlist)
+    set lvar $locate("'this_var'",eps$varlist)
+    set aaa 'lvar'
+    if lvar .ne. 0 then
+      set have_var "YES"
+    else
+      set have_var "NO"
+    endif
+    set aaa "'have_var'"
+    if have_var .eq. "YES" then
+      e clear vv
+      e vv = 'this_var'[z=*]
+      e vv
+      e vv.name
+      set short_name "'eps$attr'"
+
+      axset 0,0,0,0
+      axlabp 0,0
+      set ymove 0.60
+      set ypos 'ppl$ylen' + 'ymove'
+      set this_xmin 'ppl$xmin(1)'
+      set this_xmax 'ppl$xmax(1)'
+      if this_xmin .ge. this_xmax then
+        set this_xmin 'this_xmin' - 1.0
+        set this_xmax 'this_xmax' + 1.0
+      endif
+      %range 'this_xmin','this_xmax',4
+c     %range 30.1,34.9,4
+   
+      set col 1000. + 'this_color'
+      set col $integer(col)
+      set ccol $extract(2,3,col)
+      set ccol "C'ccol'"
+      pen 0,'this_color'
+      pen 1,'this_color'
+      pen 'ppl$line_count','this_color'
+      line 'ppl$line_count',3,0
+
+      xaxis,'ppl$range_low','ppl$range_high','ppl$range_inc'
+      set this_xlabel "'eps$xlabel'"
+      if this_var .eq. fluorometer then
+        set this_xlabel "'fluorometer_label'"
+      endif
+      xlab " "
+      ylab " "
+      title " "
+      plot
+      xlab "'this_xlabel'"
+      %xaxis:nouser,'ppl$range_low','ppl$range_high','ppl$range_inc','ypos',,,,+1,'size1'
+      %label:user 'ppl$xlast1','ppl$ylast1',0,0.,'size1',"@'ccol''short_name'"
+    endif
+
+c  PLOT P vs third variable, axis at bottom
+c    Aqua, eps70, sigma-T 
+
+    nlines
+    set nvar 3
+    set this_color $element('nvar',",",my_colors)
+    set this_var $element('nvar',",",my_varlist)
+    set lvar $locate("'this_var'",eps$varlist)
+    if lvar .ne. 0 then
+      set have_var "YES"
+    else
+      set have_var "NO"
+    endif
+
+    if have_var .eq. "YES" then
+      e clear vv
+      e vv = 'this_var'[z=*]
+      e vv
+      e vv.name
+      set short_name "'eps$attr'"
+
+      axset 0,0,0,0
+      axlabp 0,0
+ 
+      set ypos 0.
+      set this_xmin 'ppl$xmin(1)'
+      set this_xmax 'ppl$xmax(1)'
+      if this_xmin .ge. this_xmax then
+        set this_xmin 'this_xmin' - 1.0
+        set this_xmax 'this_xmax' + 1.0
+      endif
+      %range 'this_xmin','this_xmax',4
+c     %range 23.1,28.9,4
+     
+      set col 1000. + 'this_color'
+      set col $integer(col)
+      set ccol $extract(2,3,col)
+      set ccol "C'ccol'"
+      pen 0,'this_color'
+      pen 1,'this_color'
+      pen 'ppl$line_count','this_color'
+      line 'ppl$line_count',3,0
+
+      xaxis,'ppl$range_low','ppl$range_high','ppl$range_inc'
+      set this_xlabel "'eps$xlabel'"
+      if this_var .eq. fluorometer then
+        set this_xlabel "'fluorometer_label'"
+      endif
+      xlab " "
+      ylab " "
+      title " "
+      plot
+      xlab "'this_xlabel'"
+      %xaxis:nouser,'ppl$range_low','ppl$range_high','ppl$range_inc','ypos',,,,-1,'size1'
+      %label:user 'ppl$xlast(1)','ppl$ylast(1)',-1,0.,'size1',"@'ccol''short_name' "
+    endif
+
+c  PLOT P vs fourth variable, axis at bottom
+c    Magenta, eps159, pH 
+    nlines
+    set nvar 4
+    set this_color $element('nvar',",",my_colors)
+    set this_var $element('nvar',",",my_varlist)
+    set lvar $locate("'this_var'",eps$varlist)
+    if lvar .ne. 0 then
+      set have_var "YES"
+    else
+      set have_var "NO"
+    endif
+
+    if have_var .eq. "YES" then
+      e clear vv
+      e vv = 'this_var'[z=*]
+      e vv
+      e vv.name
+      set short_name "'eps$attr'"
+  
+      axset 0,0,0,0
+      axlabp 0,0
+  
+      set ypos 0. - 'ymove'
+      set this_xmin 'ppl$xmin(1)'
+      set this_xmax 'ppl$xmax(1)'
+      if this_xmin .ge. this_xmax then
+        set this_xmin 'this_xmin' - 1.0
+        set this_xmax 'this_xmax' + 1.0
+      endif
+      %range 'this_xmin','this_xmax',4
+c     %range 23.1,28.9,4
+   
+      set col 1000. + 'this_color'
+      set col $integer(col)
+      set ccol $extract(2,3,col)
+      set ccol "C'ccol'"
+      pen 0,'this_color'
+      pen 1,'this_color'
+      pen 'ppl$line_count','this_color'
+      line 'ppl$line_count',3,0
+  
+      xaxis,'ppl$range_low','ppl$range_high','ppl$range_inc'
+      set this_xlabel "'eps$xlabel'"
+      if this_var .eq. fluorometer then
+        set this_xlabel "'fluorometer_label'"
+      endif
+      xlab " "
+      ylab " "
+      title " "
+      plot
+      xlab "'this_xlabel'"
+      %xaxis:nouser,'ppl$range_low','ppl$range_high','ppl$range_inc','ypos',,,,-1,'size1'
+      %label:user 'ppl$xlast(1)','ppl$ylast(1)',-1,0.,'size1',"@'ccol''short_name' "
+    endif
+
+c  Now use PPLUS EPIC symbols in moveable labels for graph titles
+
+    e epsin.CAST
+    set cnum 'eps$attr' + 1000
+	show nct
+	show eps$attr
+    set cnum $integer ( cnum )
+    set cnum $extract(2,3,cnum)
+    set cast_number "Cast 'cnum'"
+    e epsin.CRUISE
+    set cruise 'eps$attr'
+    set cruise $edit(cruise,"collapse")
+	show eps$attr
+
+    set yadd 1.0
+    e yinc = 1.5 * 'size2'
+    e load ( yinc )
+    set yinc 'eps$scalar'
+
+    pen 0,1
+    pen 1,1
+
+    set col 1000. + 'black'
+    set col $integer(col)
+    set ccol $extract(2,3,col)
+    set ccol "C'ccol'"
+
+    set ypost 'ppl$ylen' + 'yadd'
+
+    set time1 $extract(1,5,time)
+    e yy = 'ypost' + 5*'yinc' 
+    e load ( yy )
+    set ytlab 'eps$scalar'
+    e clear yy
+c    %label:nouser 0,'ytlab',-1,0.,'size0',"@'ccol'plotted 'time1' 'date'"
+
+
+    set ypost 'ypost' + 'yinc'
+    e epsin.PROG_CMNT1
+    set loc $locate("''",eps$attr)
+    set loc 22
+c    show loc
+    if loc .gt. 0 then
+      set len1 'loc' - 1
+      set len1 $integer(len1)
+      set part1 $extract(1,'len1',eps$attr)
+      set pcomm "'part1'"
+    else
+      set pcomm "'eps$attr'"
+      set pcomm $edit(pcomm,"compress")
+    endif
+
+    set l1 $length(pcomm)
+    if l1 .gt. 40 then
+      pcomm = $extract(1,40,pcomm)
+    endif
+c    %label:nouser 0,'ypost',-1,0.,'size2',"@'ccol'@as'pcomm'"
+
+    set ypost 'ypost' + 'yinc'
+    %label:nouser 0,'ypost',-1,0.,'size1',"@'ccol'@AS File:  'eps$filename'"
+
+    set ypost 'ypost' + 'yinc'
+    %label:nouser 0,'ypost',-1,0.,'size1',"@'ccol''eps$latitude'  'eps$longitude'"
+
+    set ypost 'ypost' + 'yinc'
+       show cast_number
+       show cruise
+    %label:nouser 0,'ypost',-1,0.,'size1',"@'ccol'@as'cast_number' 'cruise' 'eps$date'"
+    %clsplt:wait
+    nlines
+  endif
+endw
+
+e close epsin
+
+c return
+exit
