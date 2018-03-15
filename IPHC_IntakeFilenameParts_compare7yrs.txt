@@ -1,0 +1,52 @@
+IPHC filenames - comparison of components 2009-2015
+2009 different from 2010-2015
+Use of 1-file example per year.  Components used for various filenames during QC & for metadata.
+
+2009: VNI212905109.cnv -- vsl + stn + set + yr  (yes, verified in meta & cnv filenames)
+** setno: 051
+** stnno: 2129
+** trpno: 04
+** vslcde: VNI
+** region: CHA
+
+2010:  CLD038512310.cnv  - vsl + set + stn + yr  (yes, verified in meta & cnv filenames)
+** setno: 038
+** stnno: 5123
+** trpno: 03
+** vslcde: CLD
+** region: CHG
+
+2011:  FTW030523311.cnv - vsl + set + stn + yr (yes, verified in meta & cnv filenames)
+** setno: 030
+** stnno: 5233
+** trpno: 02
+** vslcde: FTW
+** region: SAN
+
+2012:  BDP0013017.12.cnv - vsl + set + stn + yr (yes, verified in meta & cnv filenames)
+** setno: 001
+** stnno: 3017
+** trpno: 01
+** vslcde: BDP
+** region: KET
+
+2013:  STW012213213.cnv -  vsl + set + stn + yr (yes, verified in meta & cnv filenames)
+** setno: 012
+** stnno: 2132
+** trpno: 01
+** vslcde: STW
+** region: CHA
+
+2014:  PEN002200814.cnv - vsl + set + stn + yr  (yes, verified in meta & cnv filenames)
+** setno: 002
+** stnno: 2008
+** trpno: 01
+** vslcde PEN
+** region: VAN
+
+2015:  WFL049411115.cnv  - vsl + set + stn+ yr  (yes, verified in meta & cnv filenames)
+** setno: 049
+** stnno: 4111
+** trpno: 03
+** vslcde: WFL
+** region: PWS
