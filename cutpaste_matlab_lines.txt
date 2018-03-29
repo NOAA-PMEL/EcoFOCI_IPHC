@@ -1,0 +1,90 @@
+%%   cutpaste_matlab_lines.txt
+%                    PSullivan  3/29/2018
+%%  These are cheat-sheet lines for using on the Matlab command line, as needed.
+%   Not meant to run as an m-file.
+%
+%
+
+%% plot edited var over original var (var name is 'new')
+%  first convert 1e+35 values to Matlab's NaN
+new(new >999) = NaN;
+hold on
+plot(new,-ydep)
+
+%% calculate Sigma-T from T and Sal with m-file sigma_t_calc.m
+ST = sigma_t_calc(sal,T);
+
+
+%% create y-axis vector based on length of T (temperature) variable
+y=linspace(1,length(T),length(T));
+
+
+%%  These lines are for cut-n-paste substitution
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   1e+35,
+   
